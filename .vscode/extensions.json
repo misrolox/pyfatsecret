@@ -1,0 +1,13 @@
+{
+	// List of extensions which should be recommended for users of this workspace.
+	"recommendations": [
+		"njpwerner.autodocstring",
+		"ms-python.autopep8",
+		"mhutchie.git-graph",
+		"github.vscode-pull-request-github",
+		"eamodio.gitlens",
+		"ms-python.vscode-pylance",
+		"ms-python.python",
+		"ms-python.debugpy"
+	]
+}
