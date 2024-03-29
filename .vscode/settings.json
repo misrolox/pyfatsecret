@@ -1,0 +1,6 @@
+{
+    "autoDocstring.docstringFormat": "google",
+    "autopep8.args": [
+        "--ignore=E501"
+    ]
+}
