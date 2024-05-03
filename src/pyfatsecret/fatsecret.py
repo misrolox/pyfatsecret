@@ -13,7 +13,6 @@ See https://platform.fatsecret.com/my-account/ip-restrictions.
 
 from pyfatsecret.foods import Foods
 
-
 class Fatsecret:
 
     def __init__(self, client_id: str, client_secret: str) -> None:
