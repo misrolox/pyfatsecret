@@ -13,7 +13,6 @@ See https://platform.fatsecret.com/my-account/ip-restrictions.
 
 import requests
 import time
-from pprint import pprint
 
 
 class Fatsecret:
@@ -93,5 +92,6 @@ class Fatsecret:
         headers = {'Authorization': f'Bearer {self.access_token}'}
         params['method'] = method
         params['format'] = 'json'
-        response = requests.get(self.API_URL, headers=headers, params=params)
+
+        response = requests.post(self.API_URL, headers=headers, params=params)
         return response.json()
