@@ -1,21 +1,8 @@
-"""
-Fatsecret
----------
-
-A simple python wrapper for the Fatsecret API,
-facilitating interactions with the platform using OAuth 2.0.
-
-IP Restrictions Note:
-FatSecret requires whitelisting IP addresses for API access.
-You must specify allowed IPs in FatSecret platform settings.
-See https://platform.fatsecret.com/my-account/ip-restrictions.
-"""
-
 import requests
 import time
 
 
-class Fatsecret:
+class FatsecretBase:
     """
     A client for interacting with the Fatsecret API using OAuth 2.0 authentication.
 
@@ -27,7 +14,7 @@ class Fatsecret:
     TOKEN_URL = "https://oauth.fatsecret.com/connect/token"
     API_URL = "https://platform.fatsecret.com/rest/server.api"
 
-    def __init__(self, client_id: str, client_secret: str) -> None:
+    def __init__(self, **kwargs) -> None:
         """
         Initializes the Fatsecret API client with the provided client credentials.
 
@@ -35,8 +22,8 @@ class Fatsecret:
             client_id (str): Your FatSecret application client ID.
             client_secret (str): Your FatSecret application client secret key.
         """
-        self.client_id = client_id
-        self.client_secret = client_secret
+        self.client_id = kwargs['client_id']
+        self.client_secret = kwargs['client_secret']
         self._time_token_was_requested = time.time()
         self._access_token_data = self.get_new_access_token()
 
@@ -75,6 +62,13 @@ class Fatsecret:
             float: The number of seconds until the access token expires.
         """
         return self._access_token_data.get('expires_in') - (time.time() - self._time_token_was_requested)
+
+    def get_params(self, **kwargs):
+        params = {}
+        for key, value in kwargs.items():
+            if value is not None:
+                params[key] = value
+        return params
 
     def make_request(self, method: str, params: dict = None) -> dict:
         """
