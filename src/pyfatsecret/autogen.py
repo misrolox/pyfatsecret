@@ -1,9 +1,9 @@
-import requests
-from bs4 import BeautifulSoup
+import os
 import re
+import requests
 import autopep8
 import textwrap
-import os
+from bs4 import BeautifulSoup
 
 
 class AutoGenerator:
@@ -11,7 +11,10 @@ class AutoGenerator:
     INDENT = '    '
 
     @staticmethod
-    def get_method_name(params: list[dict]):
+    def get_method_name(params: list[dict]) -> str:
+        """
+        Gets the method name that should be called given the parameters.
+        """
         method_param_description = list(
             filter(lambda x: x['name'] == 'method', params))[0]['description']
         method_name = re.search(
@@ -19,15 +22,27 @@ class AutoGenerator:
         return method_name
 
     @staticmethod
-    def get_description(soup):
+    def get_description(soup) -> str:
+        """
+        Gets the description for the method.
+        """
         description_div = soup.find('div', class_='doc__description')
         description_text = '\n'.join(
             re.sub(r'\s+', ' ', p.text.strip()) for p in description_div.find_all('p'))
         return description_text
 
     @staticmethod
-    def get_parameters(soup):
+    def get_parameters(soup) -> list[dict]:
+        """
+        Get all parameters of the method.
 
+        Returns:
+            list[dict]: List of dictionaries in the form:
+            |   name: Parameter name
+            |   type: Parameter type
+            |   required: Either 'Required' or 'Optional' parameter
+            |   description: Parameter description
+        """
         parameter_tables = soup.find(
             'div', class_='docs__parameters').find_all('table')
 
@@ -49,12 +64,22 @@ class AutoGenerator:
         return all_parameters
 
     @staticmethod
-    def get_function_name(method_name:str):
+    def get_function_name(method_name: str) -> str:
+        """
+        Returns method name compatible with python.
+        """
         return method_name.lower().replace('.', '_')
 
     @staticmethod
-    def generate_signature(params: list[dict]):
-        function_name = AutoGenerator.get_function_name(AutoGenerator.get_method_name(params))
+    def generate_signature(params: list[dict]) -> str:
+        """
+        Generates the function signature using the given parameter list.
+
+        Example:
+            "def foods_search(self, search_expression=None, page_number=None, max_results=None, generic_description=None, region=None, language=None) -> dict:"
+        """
+        function_name = AutoGenerator.get_function_name(
+            AutoGenerator.get_method_name(params))
         func_def = f"def {function_name}(self"
 
         # Add parameters to the function definition
@@ -71,6 +96,9 @@ class AutoGenerator:
 
     @staticmethod
     def generate_docstring(description: str, params: list, url: str) -> str:
+        """
+        Generate the whole docstring of the function with a small description for each parameter.
+        """
         # Initialize the docstring with the function description
         docstring = f'"""\n{description}\n\nArgs:\n'
 
@@ -88,7 +116,10 @@ class AutoGenerator:
         return textwrap.indent(docstring, AutoGenerator.INDENT)
 
     @staticmethod
-    def generate_function_content(params: list):
+    def generate_function_content(params: list) -> str:
+        """
+        Generates the function content which is the call to the API using the right parameters.
+        """
         content = f'params = self.get_params('
         content += ', '.join([f"{param['name']}={param['name']
                                                  }" for param in params if param['name'] not in ['method', 'format']])
@@ -101,7 +132,10 @@ class AutoGenerator:
         return textwrap.indent(content, AutoGenerator.INDENT)
 
     @staticmethod
-    def generate_function(url: str):
+    def generate_function(url: str) -> str:
+        """
+        Generates the whole function from the given URL.
+        """
         response = requests.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         description = AutoGenerator.get_description(soup)
@@ -118,7 +152,14 @@ class AutoGenerator:
         return function
 
     @staticmethod
-    def generate_module_content(class_name: str, url_list: list[str]):
+    def generate_module_content(class_name: str, url_list: list[str]) -> str:
+        """
+        Generates a module containing a class with functions for API calls.
+
+        Args:
+            class_name (str): Class name
+            url_list (list[str]): List of urls to functions that should belong to this module
+        """
         module_content = f"from pyfatsecret.fatsecret_base import FatsecretBase\n\n\n"
         module_content += f"class {class_name}(FatsecretBase):\n\n"
         module_content += f"{
@@ -131,7 +172,14 @@ class AutoGenerator:
         return autopep8.fix_code(module_content)
 
     @staticmethod
-    def generate_module(class_name: str, url_list: list[str]):
+    def generate_module(class_name: str, url_list: list[str]) -> None:
+        """
+        Creates a module with the content from `generate_module_content`.
+
+        Args:
+            class_name (str): Class name
+            url_list (list[str]): List of urls to functions that should belong to this module
+        """
         current_dir = os.path.dirname(__file__)
         file_name = os.path.join(current_dir, class_name.lower() + '.py')
 
