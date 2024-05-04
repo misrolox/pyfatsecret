@@ -1,3 +1,10 @@
+"""
+Module 'profile_weight_diary.py' contains the following methods:
+    - https://platform.fatsecret.com/docs/v1/weight.update
+    - https://platform.fatsecret.com/docs/v2/weights.get_month
+
+and was generated on 04.05.2024 15:56.
+"""
 from pyfatsecret.fatsecret_base import FatsecretBase
 
 

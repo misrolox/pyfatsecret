@@ -1,3 +1,11 @@
+"""
+Module 'profile_recipes.py' contains the following methods:
+    - https://platform.fatsecret.com/docs/v1/recipe.add_favorite
+    - https://platform.fatsecret.com/docs/v1/recipe.delete_favorite
+    - https://platform.fatsecret.com/docs/v2/recipes.get_favorites
+
+and was generated on 04.05.2024 15:56.
+"""
 from pyfatsecret.fatsecret_base import FatsecretBase
 
 

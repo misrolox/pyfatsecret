@@ -1,3 +1,11 @@
+"""
+Module 'profile_auth.py' contains the following methods:
+    - https://platform.fatsecret.com/docs/v1/profile.create
+    - https://platform.fatsecret.com/docs/v1/profile.get
+    - https://platform.fatsecret.com/docs/v1/profile.get_auth
+
+and was generated on 04.05.2024 15:56.
+"""
 from pyfatsecret.fatsecret_base import FatsecretBase
 
 

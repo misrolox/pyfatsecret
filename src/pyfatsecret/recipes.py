@@ -1,3 +1,11 @@
+"""
+Module 'recipes.py' contains the following methods:
+    - https://platform.fatsecret.com/docs/v2/recipe.get
+    - https://platform.fatsecret.com/docs/v3/recipes.search
+    - https://platform.fatsecret.com/docs/v2/recipe_types.get
+
+and was generated on 04.05.2024 15:56.
+"""
 from pyfatsecret.fatsecret_base import FatsecretBase
 
 

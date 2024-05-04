@@ -1,3 +1,16 @@
+"""
+Module 'foods.py' contains the following methods:
+    - https://platform.fatsecret.com/docs/v1/food.find_id_for_barcode
+    - https://platform.fatsecret.com/docs/v4/food.get
+    - https://platform.fatsecret.com/docs/v2/foods.autocomplete
+    - https://platform.fatsecret.com/docs/v3/foods.search
+    - https://platform.fatsecret.com/docs/v1/foods.search
+    - https://platform.fatsecret.com/docs/v2/food_brands.get
+    - https://platform.fatsecret.com/docs/v2/food_categories.get
+    - https://platform.fatsecret.com/docs/v2/food_sub_categories.get
+
+and was generated on 04.05.2024 15:55.
+"""
 from pyfatsecret.fatsecret_base import FatsecretBase
 
 
