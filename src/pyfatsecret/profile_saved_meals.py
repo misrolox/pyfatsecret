@@ -90,7 +90,7 @@ class ProfileSavedMeals(FatsecretBase):
 
     def saved_meal_item_edit(self, saved_meal_item_id, saved_meal_item_name=None, number_of_units=None) -> dict:
         """
-        Records a change to a user's saved meal item. Note that the serving_id of the saved meal item may not be adjusted, however one or more of the other remaining properties – saved_meal_item_name or number_of_units may be altered. In order to adjust a serving_id for which a saved_meal_item was recorded the original item must be deleted and a new item recorded.
+        Records a change to a user's saved meal item. Note that the serving_id of the saved meal item may not be adjusted, however one or more of the other remaining properties â€“ saved_meal_item_name or number_of_units may be altered. In order to adjust a serving_id for which a saved_meal_item was recorded the original item must be deleted and a new item recorded.
 
         Args:
             saved_meal_item_id (Long): Unique saved meal item identifier

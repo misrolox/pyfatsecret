@@ -1,18 +1,15 @@
 from setuptools import setup, find_packages
 
-with open("VERSION") as version_file:
-    VERSION = version_file.read()
-
 # with open("requirements.txt") as requirements_file:
 #     REQUIREMENTS = requirements_file.read().splitlines()
-REQUIREMENTS = ['rauth', 'requests']
+REQUIREMENTS = ['rauth', 'requests', 'beautifulsoup4', 'autopep8']
 
 with open("README.md") as readme_file:
     DESCRIPTION = readme_file.read()
 
 setup(
     name="pyfatsecret",
-    version=VERSION,
+    version="0.1",
     license="MIT",
     author="Andrew Mitri",
     author_email="mitriandrew@hotmail.com",

@@ -1,5 +1,5 @@
-pyfatsecret
-===========
+src
+===
 
 .. toctree::
    :maxdepth: 4

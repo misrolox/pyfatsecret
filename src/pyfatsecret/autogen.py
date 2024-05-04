@@ -196,7 +196,7 @@ class AutoGenerator:
         module_content = AutoGenerator.generate_module_content(
             class_name, url_list)
 
-        with open(file_name, 'w') as file:
+        with open(file_name, 'w', encoding='utf-8') as file:
             file.write(module_content)
 
         print(f"Module {file_name} created successfully.")
@@ -244,7 +244,7 @@ class AutoGenerator:
 
         current_dir = os.path.dirname(__file__)
         fatsecret_py = os.path.join(current_dir, "fatsecret.py")
-        with open(fatsecret_py, 'w') as fatsecret_file:
+        with open(fatsecret_py, 'w', encoding='utf-8') as fatsecret_file:
             fatsecret_file.write(autopep8.fix_code(content))
 
         print(f"Module {fatsecret_py} created successfully.")

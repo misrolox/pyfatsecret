@@ -91,7 +91,7 @@ class ProfileFoodDiary(FatsecretBase):
 
     def food_entry_edit(self, food_entry_id, food_entry_name=None, serving_id=None, number_of_units=None, meal=None) -> dict:
         """
-        Adjusts the recorded values for a food diary entry. Note that the date of the entry may not be adjusted, however one or more of the other remaining properties – food_entry_name, serving_id, number_of_units, or meal may be altered. In order to shift the date for which a food diary entry was recorded the original entry must be deleted and a new entry recorded.
+        Adjusts the recorded values for a food diary entry. Note that the date of the entry may not be adjusted, however one or more of the other remaining properties â€“ food_entry_name, serving_id, number_of_units, or meal may be altered. In order to shift the date for which a food diary entry was recorded the original entry must be deleted and a new entry recorded.
 
         Args:
             food_entry_id (Long): Unique identifier of the food diary entry
