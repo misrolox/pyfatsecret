@@ -1,3 +1,8 @@
+"""
+Module `autogen.py` auto-generates all API methods.
+The methods are organized in modules.
+This can be customized below.
+"""
 import os
 import re
 import requests
@@ -11,9 +16,6 @@ class AutoGenerator:
 
     INDENT = '    '
     API_DOC_URL = "https://platform.fatsecret.com/docs/guides"
-    COOKIES = {
-        "FatSecret.API.Consent": "yes"
-    }
 
     @staticmethod
     def get_method_name(params: list[dict]) -> str:
@@ -169,10 +171,12 @@ class AutoGenerator:
             class_name (str): Class name
             url_list (list[str]): List of urls to functions that should belong to this module
         """
-        module_content = f'"""\nModule \'{AutoGenerator.convert_class_to_module_name(class_name)}.py\' contains the following methods:\n'
+        module_content = f'"""\nModule \'{AutoGenerator.convert_class_to_module_name(
+            class_name)}.py\' contains the following methods:\n'
         for url in url_list:
             module_content += f"{AutoGenerator.INDENT}- {url}\n"
-        module_content += f'\nand was generated on {datetime.now().strftime('%d.%m.%Y %H:%M')}.\n"""\n'
+        module_content += f'\nand was generated on {
+            datetime.now().strftime('%d.%m.%Y %H:%M')}.\n"""\n'
         module_content += f"from pyfatsecret.fatsecret_base import FatsecretBase\n\n\n"
         module_content += f"class {class_name}(FatsecretBase):\n\n"
         module_content += f"{
