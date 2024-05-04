@@ -1,7 +1,7 @@
 from pyfatsecret.fatsecret_base import FatsecretBase
 
 
-class Recipe(FatsecretBase):
+class Recipes(FatsecretBase):
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
