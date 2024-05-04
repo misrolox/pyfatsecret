@@ -24,7 +24,7 @@ class ProfileFoods(FatsecretBase):
             carbohydrate (Decimal): Total carbohydrate content in grams
             protein (Decimal): Protein content in grams
             serving_amount (String, optional): The quantity combined with serving_amount_unit to derive the total standardized quantity of the serving
-            serving_amount_unit (String, optional): The metric unit of measure for the serving size – either "g" or "ml" or "oz" – combined with metric_serving_amount to derive the total standardized quantity of the serving (default value is "g")
+            serving_amount_unit (String, optional): The metric unit of measure for the serving size â€“ either "g" or "ml" or "oz" â€“ combined with metric_serving_amount to derive the total standardized quantity of the serving (default value is "g")
             calories_from_fat (Decimal, optional): The energy content in kcal from fat
             saturated_fat (Decimal, optional): Saturated fat content in grams (where available)
             polyunsaturated_fat (Decimal, optional): Polyunsaturated fat content in grams (where available)
