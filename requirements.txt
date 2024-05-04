@@ -6,3 +6,4 @@ setuptools
 build
 wheel
 sphinx
+sphinx-rtd-theme

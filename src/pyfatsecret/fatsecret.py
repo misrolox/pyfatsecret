@@ -14,6 +14,7 @@ See https://platform.fatsecret.com/my-account/ip-restrictions.
 from pyfatsecret.food import Food
 from pyfatsecret.recipe import Recipe
 
+
 class Fatsecret:
 
     def __init__(self, client_id: str, client_secret: str) -> None:

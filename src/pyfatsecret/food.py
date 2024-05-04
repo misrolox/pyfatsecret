@@ -99,8 +99,7 @@ class Food(FatsecretBase):
             search_expression (String, optional): Search expression to match on food names
             page_number (Int, optional): Zero-based offset into the results for the query
             max_results (Int, optional): Maximum number of results to return (default value is 20). This number cannot be greater than 50
-            generic_description (String, optional): Either "weight" or "portion": Weight (default) - the summary description for key nutritional values is displayed by weight (typically 100g); E.G.: "Per 100g". Portion - the summary description for key nutritional values is displayed using the default portion size; E.G.: "Per 1 Cup"
-        Note that the summary nutrition description for "Brand" food items is always shown using a "portion" based description
+            generic_description (String, optional): Either "weight" or "portion": Weight (default) - the summary description for key nutritional values is displayed by weight (typically 100g); E.G.: "Per 100g". Portion - the summary description for key nutritional values is displayed using the default portion size; E.G.: "Per 1 Cup" Note that the summary nutrition description for "Brand" food items is always shown using a "portion" based description
             region (String, optional): Results will be filtered by region. E.G.: "FR" returns results from France
             language (String, optional): (Ignored unless region is also specified) Results will be in the specified language. E.G.: "fr" returns results in French
 

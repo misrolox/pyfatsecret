@@ -57,7 +57,7 @@ class AutoGenerator:
                     'name': row.find('th').text.strip().replace('.', '_'),
                     'type': row.find_all('td')[0].text.strip(),
                     'required': row.find_all('td')[1].text.strip(),
-                    'description': row.find_all('td')[2].text.strip()
+                    'description': re.sub(r'\s+', ' ', row.find_all('td')[2].text.strip())
                 }
                 all_parameters.append(param_info)
 
