@@ -4,11 +4,16 @@ import requests
 import autopep8
 import textwrap
 from bs4 import BeautifulSoup
+from pprint import pprint
 
 
 class AutoGenerator:
 
     INDENT = '    '
+    API_DOC_URL = "https://platform.fatsecret.com/docs/guides"
+    COOKIES = {
+        "FatSecret.API.Consent": "yes"
+    }
 
     @staticmethod
     def get_method_name(params: list[dict]) -> str:
@@ -172,6 +177,10 @@ class AutoGenerator:
         return autopep8.fix_code(module_content)
 
     @staticmethod
+    def convert_class_to_module_name(class_name: str) -> str:
+        return re.sub(r'(?<!^)(?=[A-Z])', '_', class_name).lower()
+
+    @staticmethod
     def generate_module(class_name: str, url_list: list[str]) -> None:
         """
         Creates a module with the content from `generate_module_content`.
@@ -181,7 +190,8 @@ class AutoGenerator:
             url_list (list[str]): List of urls to functions that should belong to this module
         """
         current_dir = os.path.dirname(__file__)
-        file_name = os.path.join(current_dir, class_name.lower() + '.py')
+        file_name = os.path.join(
+            current_dir, AutoGenerator.convert_class_to_module_name(class_name) + '.py')
 
         module_content = AutoGenerator.generate_module_content(
             class_name, url_list)
@@ -191,31 +201,93 @@ class AutoGenerator:
 
         print(f"Module {file_name} created successfully.")
 
+    @staticmethod
+    def get_urls_from_categories(*args):
+        response = requests.get(AutoGenerator.API_DOC_URL)
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        accordion_items = soup.findAll('div', class_='accordion-item')
+
+        links = []
+        for item in accordion_items:
+            button = item.find('button', class_='accordion-button')
+            if button.text.strip() in args:
+                links += ["https://platform.fatsecret.com" + a['href']
+                          for a in item.find_all('a', href=True)]
+
+        if not links:
+            raise RuntimeError(
+                "No links were found for the given categories: ", ', '.join(args))
+        else:
+            return links
+
+    @staticmethod
+    def generate_api(*modules_info):
+        for info in modules_info:
+            AutoGenerator.generate_module(**info)
+
+        content = ""
+
+        for info in modules_info:
+            content += f"from pyfatsecret.{AutoGenerator.convert_class_to_module_name(
+                info['class_name'])} import {info['class_name']}\n"
+
+        content += "\n\nclass Fatsecret:\n\n"
+        content += AutoGenerator.INDENT + \
+            "def __init__(self, client_id: str, client_secret: str) -> None:\n"
+        content += AutoGenerator.INDENT*2 + \
+            "kwargs = {'client_id': client_id, 'client_secret': client_secret}\n"
+
+        for info in modules_info:
+            content += AutoGenerator.INDENT*2 + f"self.{AutoGenerator.convert_class_to_module_name(
+                info['class_name'])} = {info['class_name']}(**kwargs)\n"
+
+        current_dir = os.path.dirname(__file__)
+        fatsecret_py = os.path.join(current_dir, "fatsecret.py")
+        with open(fatsecret_py, 'w') as fatsecret_file:
+            fatsecret_file.write(autopep8.fix_code(content))
+
+        print(f"Module {fatsecret_py} created successfully.")
+
 
 if __name__ == '__main__':
 
-    FOOD = {
-        'class_name': 'Food',
-        'url_list': [
-            "https://platform.fatsecret.com/docs/v1/food.find_id_for_barcode",
-            "https://platform.fatsecret.com/docs/v4/food.get",
-            "https://platform.fatsecret.com/docs/v2/foods.autocomplete",
-            "https://platform.fatsecret.com/docs/v3/foods.search",
-            "https://platform.fatsecret.com/docs/v1/foods.search",
-            "https://platform.fatsecret.com/docs/v2/food_brands.get",
-            "https://platform.fatsecret.com/docs/v2/food_categories.get",
-            "https://platform.fatsecret.com/docs/v2/food_sub_categories.get"
-        ]
+    FOODS = {
+        'class_name': 'Foods',
+        'url_list': AutoGenerator.get_urls_from_categories("Foods", "Food Brands", "Food Categories", "Food Sub Categories")
+    }
+    RECIPES = {
+        'class_name': 'Recipes',
+        'url_list': AutoGenerator.get_urls_from_categories("Recipes", "Recipe Types")
+    }
+    PROFILE_FOODS = {
+        'class_name': 'ProfileFoods',
+        'url_list': AutoGenerator.get_urls_from_categories("Profile - Foods")
+    }
+    PROFILE_RECIPES = {
+        'class_name': 'ProfileRecipes',
+        'url_list': AutoGenerator.get_urls_from_categories("Profile - Recipes")
+    }
+    PROFILE_SAVED_MEALS = {
+        'class_name': 'ProfileSavedMeals',
+        'url_list': AutoGenerator.get_urls_from_categories("Profile - Saved Meals")
+    }
+    PROFILE_AUTH = {
+        'class_name': 'ProfileAuth',
+        'url_list': AutoGenerator.get_urls_from_categories("Profile - Authentication")
+    }
+    PROFILE_FOOD_DIARY = {
+        'class_name': 'ProfileFoodDiary',
+        'url_list': AutoGenerator.get_urls_from_categories("Profile - Food Diary")
+    }
+    PROFILE_EXERCISE_DIARY = {
+        'class_name': 'ProfileExerciseDiary',
+        'url_list': AutoGenerator.get_urls_from_categories("Profile - Exercise Diary")
+    }
+    PROFILE_WEIGHT_DIARY = {
+        'class_name': 'ProfileWeightDiary',
+        'url_list': AutoGenerator.get_urls_from_categories("Profile - Weight Diary")
     }
 
-    RECIPE = {
-        'class_name': 'Recipe',
-        'url_list': [
-            "https://platform.fatsecret.com/docs/v2/recipe.get",
-            "https://platform.fatsecret.com/docs/v3/recipes.search",
-            "https://platform.fatsecret.com/docs/v2/recipe_types.get"
-        ]
-    }
-
-    AutoGenerator.generate_module(**FOOD)
-    AutoGenerator.generate_module(**RECIPE)
+    AutoGenerator.generate_api(FOODS, RECIPES, PROFILE_FOODS, PROFILE_RECIPES, PROFILE_SAVED_MEALS,
+                               PROFILE_AUTH, PROFILE_FOOD_DIARY, PROFILE_EXERCISE_DIARY, PROFILE_WEIGHT_DIARY)
