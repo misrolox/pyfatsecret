@@ -3,6 +3,8 @@
 **pyfatsecret** is a simple Python wrapper for the Fatsecret API, facilitating interactions with the platform using OAuth 2.0.
 This package allows developers to integrate Fatsecret's nutritional database and features into their applications effortlessly.
 
+Refer to the documentation on Read The Docs: https://py-fatsecret.readthedocs.io/en/latest/
+
 ## Installation
 
 Before you install `pyfatsecret`, ensure you have Python installed on your system.
