@@ -1,3 +1,14 @@
+"""
+Module 'profile_foods.py' contains the following methods:
+    - https://platform.fatsecret.com/docs/v2/food.create
+    - https://platform.fatsecret.com/docs/v1/food.add_favorite
+    - https://platform.fatsecret.com/docs/v1/food.delete_favorite
+    - https://platform.fatsecret.com/docs/v2/foods.get_favorites
+    - https://platform.fatsecret.com/docs/v2/foods.get_most_eaten
+    - https://platform.fatsecret.com/docs/v2/foods.get_recently_eaten
+
+and was generated on 04.05.2024 15:56.
+"""
 from pyfatsecret.fatsecret_base import FatsecretBase
 
 

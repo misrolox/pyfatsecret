@@ -1,9 +1,9 @@
-rauth
 requests
 beautifulsoup4
 autopep8
 setuptools
 build
 wheel
+twine
 sphinx
 sphinx-rtd-theme

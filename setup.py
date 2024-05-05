@@ -1,8 +1,5 @@
 from setuptools import setup, find_packages
 
-# with open("requirements.txt") as requirements_file:
-#     REQUIREMENTS = requirements_file.read().splitlines()
-REQUIREMENTS = ['rauth', 'requests', 'beautifulsoup4', 'autopep8']
 
 with open("README.md") as readme_file:
     DESCRIPTION = readme_file.read()
@@ -25,5 +22,5 @@ setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.9',
-    install_requires=REQUIREMENTS
+    install_requires=['requests']
 )

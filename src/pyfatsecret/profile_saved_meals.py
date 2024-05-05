@@ -1,3 +1,16 @@
+"""
+Module 'profile_saved_meals.py' contains the following methods:
+    - https://platform.fatsecret.com/docs/v1/saved_meal.create
+    - https://platform.fatsecret.com/docs/v1/saved_meal.delete
+    - https://platform.fatsecret.com/docs/v1/saved_meal.edit
+    - https://platform.fatsecret.com/docs/v2/saved_meals.get
+    - https://platform.fatsecret.com/docs/v1/saved_meal_item.add
+    - https://platform.fatsecret.com/docs/v1/saved_meal_item.edit
+    - https://platform.fatsecret.com/docs/v1/saved_meal_item.delete
+    - https://platform.fatsecret.com/docs/v2/saved_meal_items.get
+
+and was generated on 04.05.2024 15:56.
+"""
 from pyfatsecret.fatsecret_base import FatsecretBase
 
 

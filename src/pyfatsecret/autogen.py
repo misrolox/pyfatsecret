@@ -1,19 +1,21 @@
+"""
+Module `autogen.py` auto-generates all API methods.
+The methods are organized in modules.
+This can be customized below.
+"""
 import os
 import re
 import requests
 import autopep8
 import textwrap
 from bs4 import BeautifulSoup
-from pprint import pprint
+from datetime import datetime
 
 
 class AutoGenerator:
 
     INDENT = '    '
     API_DOC_URL = "https://platform.fatsecret.com/docs/guides"
-    COOKIES = {
-        "FatSecret.API.Consent": "yes"
-    }
 
     @staticmethod
     def get_method_name(params: list[dict]) -> str:
@@ -157,6 +159,10 @@ class AutoGenerator:
         return function
 
     @staticmethod
+    def convert_class_to_module_name(class_name: str) -> str:
+        return re.sub(r'(?<!^)(?=[A-Z])', '_', class_name).lower()
+
+    @staticmethod
     def generate_module_content(class_name: str, url_list: list[str]) -> str:
         """
         Generates a module containing a class with functions for API calls.
@@ -165,7 +171,13 @@ class AutoGenerator:
             class_name (str): Class name
             url_list (list[str]): List of urls to functions that should belong to this module
         """
-        module_content = f"from pyfatsecret.fatsecret_base import FatsecretBase\n\n\n"
+        module_content = f'"""\nModule \'{AutoGenerator.convert_class_to_module_name(
+            class_name)}.py\' contains the following methods:\n'
+        for url in url_list:
+            module_content += f"{AutoGenerator.INDENT}- {url}\n"
+        module_content += f'\nand was generated on {
+            datetime.now().strftime('%d.%m.%Y %H:%M')}.\n"""\n'
+        module_content += f"from pyfatsecret.fatsecret_base import FatsecretBase\n\n\n"
         module_content += f"class {class_name}(FatsecretBase):\n\n"
         module_content += f"{
             AutoGenerator.INDENT}def __init__(self, **kwargs) -> None:\n"
@@ -175,10 +187,6 @@ class AutoGenerator:
             [AutoGenerator.generate_function(url) for url in url_list]), AutoGenerator.INDENT)
 
         return autopep8.fix_code(module_content)
-
-    @staticmethod
-    def convert_class_to_module_name(class_name: str) -> str:
-        return re.sub(r'(?<!^)(?=[A-Z])', '_', class_name).lower()
 
     @staticmethod
     def generate_module(class_name: str, url_list: list[str]) -> None:
@@ -202,7 +210,16 @@ class AutoGenerator:
         print(f"Module {file_name} created successfully.")
 
     @staticmethod
-    def get_urls_from_categories(*args):
+    def get_urls_from_categories(*args) -> list[str]:
+        """
+        Retrieves the URLs of the methods that are under the given categories in the navigation bar.
+
+        Raises:
+            RuntimeError: when no links are found.
+
+        Returns:
+            list[str]: List of URLs
+        """
         response = requests.get(AutoGenerator.API_DOC_URL)
         soup = BeautifulSoup(response.text, 'html.parser')
 
@@ -222,7 +239,16 @@ class AutoGenerator:
             return links
 
     @staticmethod
-    def generate_api(*modules_info):
+    def generate_api(*modules_info) -> None:
+        """
+        Given all modules information in the form
+        | {
+        |   'class_name': ...,
+        |   'url_list': [...]
+        | },
+        this function generates all modules and then combines them in the class 'Fatsecret'
+        in a main module called 'fatsecret.py'
+        """
         for info in modules_info:
             AutoGenerator.generate_module(**info)
 

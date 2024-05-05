@@ -1,3 +1,14 @@
+"""
+Module 'profile_exercise_diary.py' contains the following methods:
+    - https://platform.fatsecret.com/docs/v2/exercises.get
+    - https://platform.fatsecret.com/docs/v1/exercise_entries.commit_day
+    - https://platform.fatsecret.com/docs/v2/exercise_entries.get
+    - https://platform.fatsecret.com/docs/v2/exercise_entries.get_month
+    - https://platform.fatsecret.com/docs/v1/exercise_entries.save_template
+    - https://platform.fatsecret.com/docs/v1/exercise_entry.edit
+
+and was generated on 04.05.2024 15:56.
+"""
 from pyfatsecret.fatsecret_base import FatsecretBase
 
 

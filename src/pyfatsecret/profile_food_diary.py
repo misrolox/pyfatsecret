@@ -1,3 +1,15 @@
+"""
+Module 'profile_food_diary.py' contains the following methods:
+    - https://platform.fatsecret.com/docs/v1/food_entries.copy
+    - https://platform.fatsecret.com/docs/v1/food_entries.copy_saved_meal
+    - https://platform.fatsecret.com/docs/v2/food_entries.get
+    - https://platform.fatsecret.com/docs/v2/food_entries.get_month
+    - https://platform.fatsecret.com/docs/v1/food_entry.create
+    - https://platform.fatsecret.com/docs/v1/food_entry.edit
+    - https://platform.fatsecret.com/docs/v1/food_entry.delete
+
+and was generated on 04.05.2024 15:56.
+"""
 from pyfatsecret.fatsecret_base import FatsecretBase
 
 
