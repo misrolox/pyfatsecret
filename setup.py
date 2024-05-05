@@ -6,7 +6,7 @@ with open("README.md") as readme_file:
 
 setup(
     name="pyfatsecret",
-    version="0.1",
+    version="0.1.1",
     license="MIT",
     author="Andrew Mitri",
     author_email="mitriandrew@hotmail.com",
@@ -21,6 +21,6 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.9',
-    install_requires=['requests']
+    python_requires='>=3.10',
+    install_requires=['requests==2.31.0']
 )
