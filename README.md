@@ -10,7 +10,7 @@ Refer to the documentation on Read The Docs: https://py-fatsecret.readthedocs.io
 Before you install `pyfatsecret`, ensure you have Python installed on your system.
 This package requires the `requests` library, which can be installed using pip if not already available.
 
-To install `pyfatsecret`, use the following pip command (Note: this package is not available yet):
+To install `pyfatsecret`, use the following pip command:
 
 ```bash
 pip install pyfatsecret
