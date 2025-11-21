@@ -38,7 +38,19 @@ class FatsecretBase:
         self._time_token_was_requested = time.time()
         response = requests.post(self.TOKEN_URL, data=data,
                                  auth=(self.client_id, self.client_secret))
-        return response.json()
+        try:
+            payload = response.json()
+        except Exception as exc:  # pragma: no cover - network dependent
+            raise RuntimeError(
+                f"Failed to parse token response (status {response.status_code})"
+            ) from exc
+
+        if not response.ok or 'access_token' not in payload:
+            raise RuntimeError(
+                f"Failed to obtain access token (status {response.status_code}): {payload}"
+            )
+
+        return payload
 
     @property
     def access_token(self):
@@ -48,10 +60,17 @@ class FatsecretBase:
         Returns:
             str: The access token.
         """
-        if self.access_token_expires_in < 600:
+        expires_in = self.access_token_expires_in
+        if expires_in is None or expires_in < 600:
             self._access_token_data = self.get_new_access_token()
+            expires_in = self.access_token_expires_in
 
-        return self._access_token_data.get('access_token')
+        token = self._access_token_data.get('access_token')
+        if not token:
+            raise RuntimeError(
+                f"Token response is missing 'access_token': {self._access_token_data}"
+            )
+        return token
 
     @property
     def access_token_expires_in(self) -> float:
@@ -61,7 +80,10 @@ class FatsecretBase:
         Returns:
             float: The number of seconds until the access token expires.
         """
-        return self._access_token_data.get('expires_in') - (time.time() - self._time_token_was_requested)
+        expires_in = self._access_token_data.get('expires_in')
+        if not isinstance(expires_in, (int, float)):
+            return None
+        return expires_in - (time.time() - self._time_token_was_requested)
 
     def get_params(self, **kwargs):
         params = {}
