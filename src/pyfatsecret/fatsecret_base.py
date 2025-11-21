@@ -63,7 +63,6 @@ class FatsecretBase:
         expires_in = self.access_token_expires_in
         if expires_in is None or expires_in < 600:
             self._access_token_data = self.get_new_access_token()
-            expires_in = self.access_token_expires_in
 
         token = self._access_token_data.get('access_token')
         if not token:
