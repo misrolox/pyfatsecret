@@ -16,6 +16,7 @@ class AutoGenerator:
 
     INDENT = '    '
     API_DOC_URL = "https://platform.fatsecret.com/docs/guides"
+    REQUEST_TIMEOUT = 15
 
     @staticmethod
     def get_method_name(params: list[dict]) -> str:
@@ -34,6 +35,8 @@ class AutoGenerator:
         Gets the description for the method.
         """
         description_div = soup.find('div', class_='doc__description')
+        if not description_div:
+            raise RuntimeError("Could not find description in the documentation page.")
         description_text = '\n'.join(
             re.sub(r'\s+', ' ', p.text.strip()) for p in description_div.find_all('p'))
         return description_text
@@ -50,8 +53,10 @@ class AutoGenerator:
             |   required: Either 'Required' or 'Optional' parameter
             |   description: Parameter description
         """
-        parameter_tables = soup.find(
-            'div', class_='docs__parameters').find_all('table')
+        parameters_section = soup.find('div', class_='docs__parameters')
+        if parameters_section is None:
+            raise RuntimeError("Could not find parameters table in the documentation page.")
+        parameter_tables = parameters_section.find_all('table')
 
         # List to hold all parameter dictionaries
         all_parameters = []
@@ -155,8 +160,7 @@ class AutoGenerator:
         """
         Generates the whole function from the given URL.
         """
-        response = requests.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = AutoGenerator.get_soup(url)
         description = AutoGenerator.get_description(soup)
         parameters = AutoGenerator.get_parameters(soup)
         function_signature = AutoGenerator.generate_signature(parameters)
@@ -222,6 +226,13 @@ class AutoGenerator:
         print(f"Module {file_name} created successfully.")
 
     @staticmethod
+    def get_soup(url: str):
+        response = requests.get(url, timeout=AutoGenerator.REQUEST_TIMEOUT)
+        if not response.ok:
+            raise RuntimeError(f"Failed to fetch documentation page {url} (status {response.status_code})")
+        return BeautifulSoup(response.text, 'html.parser')
+
+    @staticmethod
     def get_urls_from_categories(*args) -> list[str]:
         """
         Retrieves the URLs of the methods that are under the given categories in the navigation bar.
@@ -232,8 +243,7 @@ class AutoGenerator:
         Returns:
             list[str]: List of URLs
         """
-        response = requests.get(AutoGenerator.API_DOC_URL)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = AutoGenerator.get_soup(AutoGenerator.API_DOC_URL)
 
         accordion_items = soup.find_all('div', class_='accordion-item')
 
@@ -277,7 +287,7 @@ class AutoGenerator:
             for version in range(current_version - 1, 0, -1):
                 candidate = f"https://platform.fatsecret.com/docs/v{version}/{endpoint_slug}"
                 try:
-                    resp = requests.get(candidate, allow_redirects=True, timeout=10)
+                    resp = requests.get(candidate, allow_redirects=True, timeout=AutoGenerator.REQUEST_TIMEOUT)
                 except Exception:
                     continue
 
