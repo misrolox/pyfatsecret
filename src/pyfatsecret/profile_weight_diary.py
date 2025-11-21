@@ -2,8 +2,9 @@
 Module 'profile_weight_diary.py' contains the following methods:
     - https://platform.fatsecret.com/docs/v1/weight.update
     - https://platform.fatsecret.com/docs/v2/weights.get_month
+    - https://platform.fatsecret.com/docs/v1/weights.get_month
 
-and was generated on 04.05.2024 15:56.
+and was generated on 21.11.2025 17:10.
 """
 from pyfatsecret.fatsecret_base import FatsecretBase
 
@@ -49,3 +50,17 @@ class ProfileWeightDiary(FatsecretBase):
         params = self.get_params(date=date)
 
         return self.make_request(method='weights.get_month.v2', params=params)
+
+    def weights_get_month(self, date=None) -> dict:
+        """
+        Returns the recorded weights for a user for the month specified. Use this call to display a user's weight chart or log of weight changes for a nominated month. The day elements returned are those where the user entered or updated their weight for the specified month. Days with no recorded weight are not included.
+
+        Args:
+            date (Int, optional): Number of days since January 1, 1970 (default value is the current day)
+
+        Returns:
+            dict: See https://platform.fatsecret.com/docs/v1/weights.get_month
+        """
+        params = self.get_params(date=date)
+
+        return self.make_request(method='weights.get_month', params=params)

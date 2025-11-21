@@ -4,12 +4,14 @@ Module 'profile_saved_meals.py' contains the following methods:
     - https://platform.fatsecret.com/docs/v1/saved_meal.delete
     - https://platform.fatsecret.com/docs/v1/saved_meal.edit
     - https://platform.fatsecret.com/docs/v2/saved_meals.get
+    - https://platform.fatsecret.com/docs/v1/saved_meals.get
     - https://platform.fatsecret.com/docs/v1/saved_meal_item.add
     - https://platform.fatsecret.com/docs/v1/saved_meal_item.edit
     - https://platform.fatsecret.com/docs/v1/saved_meal_item.delete
     - https://platform.fatsecret.com/docs/v2/saved_meal_items.get
+    - https://platform.fatsecret.com/docs/v1/saved_meal_items.get
 
-and was generated on 04.05.2024 15:56.
+and was generated on 21.11.2025 17:09.
 """
 from pyfatsecret.fatsecret_base import FatsecretBase
 
@@ -82,6 +84,20 @@ class ProfileSavedMeals(FatsecretBase):
 
         return self.make_request(method='saved_meals.get.v2', params=params)
 
+    def saved_meals_get(self, meal=None) -> dict:
+        """
+        Returns saved meals for the specified user.
+
+        Args:
+            meal (String, optional): Type of meal eaten. Valid meal types are "breakfast", "lunch", "dinner" and "other"
+
+        Returns:
+            dict: See https://platform.fatsecret.com/docs/v1/saved_meals.get
+        """
+        params = self.get_params(meal=meal)
+
+        return self.make_request(method='saved_meals.get', params=params)
+
     def saved_meal_item_add(self, saved_meal_id, food_id, saved_meal_item_name, serving_id, number_of_units) -> dict:
         """
         Adds a food to a user's saved meal according to the parameters specified. The result of the call is the new unique identifier of the newly created saved meal item.
@@ -145,3 +161,17 @@ class ProfileSavedMeals(FatsecretBase):
         params = self.get_params(saved_meal_id=saved_meal_id)
 
         return self.make_request(method='saved_meal_items.get.v2', params=params)
+
+    def saved_meal_items_get(self, saved_meal_id) -> dict:
+        """
+        Returns saved meal items for a specified saved meal.
+
+        Args:
+            saved_meal_id (Long): Unique saved meal identifier
+
+        Returns:
+            dict: See https://platform.fatsecret.com/docs/v1/saved_meal_items.get
+        """
+        params = self.get_params(saved_meal_id=saved_meal_id)
+
+        return self.make_request(method='saved_meal_items.get', params=params)

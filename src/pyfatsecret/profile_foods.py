@@ -1,13 +1,17 @@
 """
 Module 'profile_foods.py' contains the following methods:
     - https://platform.fatsecret.com/docs/v2/food.create
+    - https://platform.fatsecret.com/docs/v1/food.create
     - https://platform.fatsecret.com/docs/v1/food.add_favorite
     - https://platform.fatsecret.com/docs/v1/food.delete_favorite
     - https://platform.fatsecret.com/docs/v2/foods.get_favorites
+    - https://platform.fatsecret.com/docs/v1/foods.get_favorites
     - https://platform.fatsecret.com/docs/v2/foods.get_most_eaten
+    - https://platform.fatsecret.com/docs/v1/foods.get_most_eaten
     - https://platform.fatsecret.com/docs/v2/foods.get_recently_eaten
+    - https://platform.fatsecret.com/docs/v1/foods.get_recently_eaten
 
-and was generated on 04.05.2024 15:56.
+and was generated on 21.11.2025 17:09.
 """
 from pyfatsecret.fatsecret_base import FatsecretBase
 
@@ -52,7 +56,7 @@ class ProfileFoods(FatsecretBase):
             vitamin_c (Decimal, optional): Vitamin C content in milligrams (where available)
             calcium (Decimal, optional): Calcium content in milligrams (where available)
             iron (Decimal, optional): Iron content in milligrams (where available)
-            region (String, optional): Results will be filtered by region. E.G.: "FR" returns results from France
+            region (String, optional): Results will be filtered by region. E.G.: "FR" returns results from France. If not specified this will default to "US" (United States). Click here for full documentation on localization.
             language (String, optional): (Ignored unless region is also specified) Results will be in the specified language. E.G.: "fr" returns results in French
 
         Returns:
@@ -62,6 +66,47 @@ class ProfileFoods(FatsecretBase):
                                  polyunsaturated_fat=polyunsaturated_fat, monounsaturated_fat=monounsaturated_fat, trans_fat=trans_fat, cholesterol=cholesterol, sodium=sodium, potassium=potassium, fiber=fiber, sugar=sugar, added_sugars=added_sugars, vitamin_d=vitamin_d, vitamin_a=vitamin_a, vitamin_c=vitamin_c, calcium=calcium, iron=iron, region=region, language=language)
 
         return self.make_request(method='food.create.v2', params=params)
+
+    def food_create(self, brand_type, brand_name, food_name, serving_size, calories, fat, carbohydrate, protein, serving_amount=None, serving_amount_unit=None, calories_from_fat=None, saturated_fat=None, polyunsaturated_fat=None, monounsaturated_fat=None, trans_fat=None, cholesterol=None, sodium=None, potassium=None, fiber=None, sugar=None, other_carbohydrate=None, vitamin_a=None, vitamin_c=None, calcium=None, iron=None, region=None, language=None) -> dict:
+        """
+        Creates a food for the user according to the parameters specified. The result of the call is the new unique identifier of the newly created food.
+
+        Args:
+            brand_type (String): Either "manufacturer", "restaurant" or "supermarket" (default value is "manufacturer")
+            brand_name (String): Brand name, only when food_type is "Brand". E.G.: "Quaker"
+            food_name (String): Name of the food, not including the brand name. E.G.: "Instant Oatmeal"
+            serving_size (String): Full description of the serving size. E.G.: "1 serving"
+            calories (Decimal): Energy content in kcal
+            fat (Decimal): Total fat content in grams
+            carbohydrate (Decimal): Total carbohydrate content in grams
+            protein (Decimal): Protein content in grams
+            serving_amount (String, optional): The quantity combined with serving_amount_unit to derive the total standardized quantity of the serving
+            serving_amount_unit (String, optional): The metric unit of measure for the serving size – either "g" or "ml" or "oz" – combined with metric_serving_amount to derive the total standardized quantity of the serving (default value is "g")
+            calories_from_fat (Decimal, optional): The energy content in kcal from fat
+            saturated_fat (Decimal, optional): Saturated fat content in grams (where available)
+            polyunsaturated_fat (Decimal, optional): Polyunsaturated fat content in grams (where available)
+            monounsaturated_fat (Decimal, optional): Monounsaturated fat content in grams (where available)
+            trans_fat (Decimal, optional): Trans fat content in grams (where available)
+            cholesterol (Decimal, optional): Cholesterol content in milligrams (where available)
+            sodium (Decimal, optional): Sodium content in milligrams (where available)
+            potassium (Decimal, optional): Potassium content in milligrams (where available)
+            fiber (Decimal, optional): Fiber content in grams (where available)
+            sugar (Decimal, optional): Sugar content in grams (where available)
+            other_carbohydrate (Decimal, optional): The other carbohydrate content in grams
+            vitamin_a (Decimal, optional): Percentage of daily recommended Vitamin A, based on a 2000 calorie diet (where available)
+            vitamin_c (Decimal, optional): Percentage of daily recommended Vitamin C, based on a 2000 calorie diet (where available)
+            calcium (Decimal, optional): Percentage of daily recommended Calcium, based on a 2000 calorie diet (where available)
+            iron (Decimal, optional): Percentage of daily recommended Iron, based on a 2000 calorie diet (where available)
+            region (String, optional): Results will be filtered by region. E.G.: "FR" returns results from France. If not specified this will default to "US" (United States). Click here for full documentation on localization.
+            language (String, optional): (Ignored unless region is also specified) Results will be in the specified language. E.G.: "fr" returns results in French
+
+        Returns:
+            dict: See https://platform.fatsecret.com/docs/v1/food.create
+        """
+        params = self.get_params(brand_type=brand_type, brand_name=brand_name, food_name=food_name, serving_size=serving_size, calories=calories, fat=fat, carbohydrate=carbohydrate, protein=protein, serving_amount=serving_amount, serving_amount_unit=serving_amount_unit, calories_from_fat=calories_from_fat, saturated_fat=saturated_fat,
+                                 polyunsaturated_fat=polyunsaturated_fat, monounsaturated_fat=monounsaturated_fat, trans_fat=trans_fat, cholesterol=cholesterol, sodium=sodium, potassium=potassium, fiber=fiber, sugar=sugar, other_carbohydrate=other_carbohydrate, vitamin_a=vitamin_a, vitamin_c=vitamin_c, calcium=calcium, iron=iron, region=region, language=language)
+
+        return self.make_request(method='food.create', params=params)
 
     def food_add_favorite(self, food_id, serving_id=None, number_of_units=None) -> dict:
         """
@@ -110,6 +155,19 @@ class ProfileFoods(FatsecretBase):
 
         return self.make_request(method='foods.get_favorites.v2', params=params)
 
+    def foods_get_favorites(self) -> dict:
+        """
+        Returns the favorite foods for the specified user.
+
+        Args:
+
+        Returns:
+            dict: See https://platform.fatsecret.com/docs/v1/foods.get_favorites
+        """
+        params = self.get_params()
+
+        return self.make_request(method='foods.get_favorites', params=params)
+
     def foods_get_most_eaten_v2(self, meal=None) -> dict:
         """
         Returns the favorite foods for the specified user.
@@ -124,6 +182,20 @@ class ProfileFoods(FatsecretBase):
 
         return self.make_request(method='foods.get_most_eaten.v2', params=params)
 
+    def foods_get_most_eaten(self, meal=None) -> dict:
+        """
+        Returns the favorite foods for the specified user.
+
+        Args:
+            meal (String, optional): Type of meal eaten. Valid meal types are "breakfast", "lunch", "dinner" and "other"
+
+        Returns:
+            dict: See https://platform.fatsecret.com/docs/v1/foods.get_most_eaten
+        """
+        params = self.get_params(meal=meal)
+
+        return self.make_request(method='foods.get_most_eaten', params=params)
+
     def foods_get_recently_eaten_v2(self, meal=None) -> dict:
         """
         Returns the favorite foods for the specified user.
@@ -137,3 +209,17 @@ class ProfileFoods(FatsecretBase):
         params = self.get_params(meal=meal)
 
         return self.make_request(method='foods.get_recently_eaten.v2', params=params)
+
+    def foods_get_recently_eaten(self, meal=None) -> dict:
+        """
+        Returns the favorite foods for the specified user.
+
+        Args:
+            meal (String, optional): Type of meal eaten. Valid meal types are "breakfast", "lunch", "dinner" and "other"
+
+        Returns:
+            dict: See https://platform.fatsecret.com/docs/v1/foods.get_recently_eaten
+        """
+        params = self.get_params(meal=meal)
+
+        return self.make_request(method='foods.get_recently_eaten', params=params)

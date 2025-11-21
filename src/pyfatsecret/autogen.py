@@ -16,6 +16,7 @@ class AutoGenerator:
 
     INDENT = '    '
     API_DOC_URL = "https://platform.fatsecret.com/docs/guides"
+    REQUEST_TIMEOUT = 15
 
     @staticmethod
     def get_method_name(params: list[dict]) -> str:
@@ -34,6 +35,8 @@ class AutoGenerator:
         Gets the description for the method.
         """
         description_div = soup.find('div', class_='doc__description')
+        if not description_div:
+            raise RuntimeError("Could not find description in the documentation page.")
         description_text = '\n'.join(
             re.sub(r'\s+', ' ', p.text.strip()) for p in description_div.find_all('p'))
         return description_text
@@ -50,8 +53,10 @@ class AutoGenerator:
             |   required: Either 'Required' or 'Optional' parameter
             |   description: Parameter description
         """
-        parameter_tables = soup.find(
-            'div', class_='docs__parameters').find_all('table')
+        parameters_section = soup.find('div', class_='docs__parameters')
+        if parameters_section is None:
+            raise RuntimeError("Could not find parameters table in the documentation page.")
+        parameter_tables = parameters_section.find_all('table')
 
         # List to hold all parameter dictionaries
         all_parameters = []
@@ -60,11 +65,23 @@ class AutoGenerator:
         for table in parameter_tables:
             param_rows = table.find('tbody').find_all('tr')
             for row in param_rows:
+                columns = row.find_all('td')
+                if len(columns) < 3:
+                    continue
+                if columns[0].text.strip().lower() == 'n/a':
+                    continue
+                raw_name = row.find('th').text.strip()
+                if raw_name.lower().startswith('url'):
+                    continue
+
+                param_name = re.sub(r'\W+', '_', raw_name).strip('_')
+                if not param_name:
+                    continue
                 param_info = {
-                    'name': row.find('th').text.strip().replace('.', '_'),
-                    'type': row.find_all('td')[0].text.strip(),
-                    'required': row.find_all('td')[1].text.strip(),
-                    'description': re.sub(r'\s+', ' ', row.find_all('td')[2].text.strip())
+                    'name': param_name,
+                    'type': columns[0].text.strip(),
+                    'required': columns[1].text.strip(),
+                    'description': re.sub(r'\s+', ' ', columns[2].text.strip())
                 }
                 all_parameters.append(param_info)
 
@@ -143,8 +160,7 @@ class AutoGenerator:
         """
         Generates the whole function from the given URL.
         """
-        response = requests.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = AutoGenerator.get_soup(url)
         description = AutoGenerator.get_description(soup)
         parameters = AutoGenerator.get_parameters(soup)
         function_signature = AutoGenerator.generate_signature(parameters)
@@ -210,6 +226,13 @@ class AutoGenerator:
         print(f"Module {file_name} created successfully.")
 
     @staticmethod
+    def get_soup(url: str):
+        response = requests.get(url, timeout=AutoGenerator.REQUEST_TIMEOUT)
+        if not response.ok:
+            raise RuntimeError(f"Failed to fetch documentation page {url} (status {response.status_code})")
+        return BeautifulSoup(response.text, 'html.parser')
+
+    @staticmethod
     def get_urls_from_categories(*args) -> list[str]:
         """
         Retrieves the URLs of the methods that are under the given categories in the navigation bar.
@@ -220,23 +243,63 @@ class AutoGenerator:
         Returns:
             list[str]: List of URLs
         """
-        response = requests.get(AutoGenerator.API_DOC_URL)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = AutoGenerator.get_soup(AutoGenerator.API_DOC_URL)
 
-        accordion_items = soup.findAll('div', class_='accordion-item')
+        accordion_items = soup.find_all('div', class_='accordion-item')
 
         links = []
         for item in accordion_items:
             button = item.find('button', class_='accordion-button')
-            if button.text.strip() in args:
+            if button and button.text.strip() in args:
                 links += ["https://platform.fatsecret.com" + a['href']
                           for a in item.find_all('a', href=True)]
+
+        links = AutoGenerator.expand_versions(links)
 
         if not links:
             raise RuntimeError(
                 "No links were found for the given categories: ", ', '.join(args))
         else:
             return links
+
+    @staticmethod
+    def expand_versions(links: list[str]) -> list[str]:
+        """
+        Given a list of doc URLs (usually the latest versions), attempt to fetch
+        all older versions by following the numeric version segment in each URL.
+        """
+        all_links = []
+        seen = set()
+
+        for link in links:
+            if link in seen:
+                continue
+            seen.add(link)
+            all_links.append(link)
+
+            match = re.search(r'/docs/v(\d+)/(.+)$', link)
+            if not match:
+                continue
+
+            current_version = int(match.group(1))
+            endpoint_slug = match.group(2)
+
+            for version in range(current_version - 1, 0, -1):
+                candidate = f"https://platform.fatsecret.com/docs/v{version}/{endpoint_slug}"
+                try:
+                    resp = requests.get(candidate, allow_redirects=True, timeout=AutoGenerator.REQUEST_TIMEOUT)
+                except Exception:
+                    continue
+
+                # The docs site redirects missing versions back to /docs/guides.
+                if not resp.ok or resp.url.rstrip('/') != candidate.rstrip('/'):
+                    continue
+
+                if candidate not in seen:
+                    seen.add(candidate)
+                    all_links.append(candidate)
+
+        return all_links
 
     @staticmethod
     def generate_api(*modules_info) -> None:

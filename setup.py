@@ -6,7 +6,7 @@ with open("README.md") as readme_file:
 
 setup(
     name="pyfatsecret",
-    version="0.1.1",
+    version="0.2.0",
     license="MIT",
     author="Andrew Mitri",
     author_email="mitriandrew@hotmail.com",
