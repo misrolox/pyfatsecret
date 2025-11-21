@@ -3,12 +3,14 @@ Module 'profile_food_diary.py' contains the following methods:
     - https://platform.fatsecret.com/docs/v1/food_entries.copy
     - https://platform.fatsecret.com/docs/v1/food_entries.copy_saved_meal
     - https://platform.fatsecret.com/docs/v2/food_entries.get
+    - https://platform.fatsecret.com/docs/v1/food_entries.get
     - https://platform.fatsecret.com/docs/v2/food_entries.get_month
+    - https://platform.fatsecret.com/docs/v1/food_entries.get_month
     - https://platform.fatsecret.com/docs/v1/food_entry.create
     - https://platform.fatsecret.com/docs/v1/food_entry.edit
     - https://platform.fatsecret.com/docs/v1/food_entry.delete
 
-and was generated on 04.05.2024 15:56.
+and was generated on 21.11.2025 17:10.
 """
 from pyfatsecret.fatsecret_base import FatsecretBase
 
@@ -67,6 +69,21 @@ class ProfileFoodDiary(FatsecretBase):
 
         return self.make_request(method='food_entries.get.v2', params=params)
 
+    def food_entries_get(self, date, food_entry_id) -> dict:
+        """
+        Returns saved food diary entries for the user according to the filter specified. This method can be used to return all food diary entries recorded on a nominated date or a single food diary entry with a nominated food_entry_id.
+
+        Args:
+            date (Int): Number of days since January 1, 1970 (default value is the current day)
+            food_entry_id (Long): Unique identifier of the food diary entry
+
+        Returns:
+            dict: See https://platform.fatsecret.com/docs/v1/food_entries.get
+        """
+        params = self.get_params(date=date, food_entry_id=food_entry_id)
+
+        return self.make_request(method='food_entries.get', params=params)
+
     def food_entries_get_month_v2(self, date) -> dict:
         """
         Returns summary daily nutritional information for a user's food diary entries for the month specified. Use this call to display nutritional information to users about their food intake for a nominated month. Days with no food diary entries are not included.
@@ -80,6 +97,20 @@ class ProfileFoodDiary(FatsecretBase):
         params = self.get_params(date=date)
 
         return self.make_request(method='food_entries.get_month.v2', params=params)
+
+    def food_entries_get_month(self, date) -> dict:
+        """
+        Returns summary daily nutritional information for a user's food diary entries for the month specified. Use this call to display nutritional information to users about their food intake for a nominated month. Days with no food diary entries are not included.
+
+        Args:
+            date (Int): Number of days since January 1, 1970 (default value is the current day)
+
+        Returns:
+            dict: See https://platform.fatsecret.com/docs/v1/food_entries.get_month
+        """
+        params = self.get_params(date=date)
+
+        return self.make_request(method='food_entries.get_month', params=params)
 
     def food_entry_create(self, food_id, food_entry_name, serving_id, number_of_units, meal, date) -> dict:
         """

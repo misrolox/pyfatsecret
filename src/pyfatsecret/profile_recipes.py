@@ -3,8 +3,9 @@ Module 'profile_recipes.py' contains the following methods:
     - https://platform.fatsecret.com/docs/v1/recipe.add_favorite
     - https://platform.fatsecret.com/docs/v1/recipe.delete_favorite
     - https://platform.fatsecret.com/docs/v2/recipes.get_favorites
+    - https://platform.fatsecret.com/docs/v1/recipes.get_favorites
 
-and was generated on 04.05.2024 15:56.
+and was generated on 21.11.2025 17:09.
 """
 from pyfatsecret.fatsecret_base import FatsecretBase
 
@@ -54,3 +55,16 @@ class ProfileRecipes(FatsecretBase):
         params = self.get_params()
 
         return self.make_request(method='recipe.get_favorites.v2', params=params)
+
+    def recipe_get_favorites(self) -> dict:
+        """
+        Returns the favorite recipes for the specified user.
+
+        Args:
+
+        Returns:
+            dict: See https://platform.fatsecret.com/docs/v1/recipes.get_favorites
+        """
+        params = self.get_params()
+
+        return self.make_request(method='recipe.get_favorites', params=params)

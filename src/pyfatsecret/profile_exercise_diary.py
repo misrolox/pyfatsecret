@@ -1,13 +1,16 @@
 """
 Module 'profile_exercise_diary.py' contains the following methods:
     - https://platform.fatsecret.com/docs/v2/exercises.get
+    - https://platform.fatsecret.com/docs/v1/exercises.get
     - https://platform.fatsecret.com/docs/v1/exercise_entries.commit_day
     - https://platform.fatsecret.com/docs/v2/exercise_entries.get
+    - https://platform.fatsecret.com/docs/v1/exercise_entries.get
     - https://platform.fatsecret.com/docs/v2/exercise_entries.get_month
+    - https://platform.fatsecret.com/docs/v1/exercise_entries.get_month
     - https://platform.fatsecret.com/docs/v1/exercise_entries.save_template
     - https://platform.fatsecret.com/docs/v1/exercise_entry.edit
 
-and was generated on 04.05.2024 15:56.
+and was generated on 21.11.2025 17:10.
 """
 from pyfatsecret.fatsecret_base import FatsecretBase
 
@@ -22,7 +25,7 @@ class ProfileExerciseDiary(FatsecretBase):
         This is a utility method, returning the full list of all supported exercise type names and their associated unique identifiers.
 
         Args:
-            region (String, optional): Results will be filtered by region. E.G.: "FR" returns results from France
+            region (String, optional): Results will be filtered by region. E.G.: "FR" returns results from France. If not specified this will default to "US" (United States). Click here for full documentation on localization.
             language (String, optional): (Ignored unless region is also specified) Results will be in the specified language. E.G.: "fr" returns results in French
 
         Returns:
@@ -31,6 +34,21 @@ class ProfileExerciseDiary(FatsecretBase):
         params = self.get_params(region=region, language=language)
 
         return self.make_request(method='exercises.get.v2', params=params)
+
+    def exercises_get(self, region=None, language=None) -> dict:
+        """
+        This is a utility method, returning the full list of all supported exercise type names and their associated unique identifiers.
+
+        Args:
+            region (String, optional): Results will be filtered by region. E.G.: "FR" returns results from France. If not specified this will default to "US" (United States). Click here for full documentation on localization.
+            language (String, optional): (Ignored unless region is also specified) Results will be in the specified language. E.G.: "fr" returns results in French
+
+        Returns:
+            dict: See https://platform.fatsecret.com/docs/v1/exercises.get
+        """
+        params = self.get_params(region=region, language=language)
+
+        return self.make_request(method='exercises.get', params=params)
 
     def exercise_entries_commit_day(self, date=None) -> dict:
         """
@@ -64,6 +82,22 @@ class ProfileExerciseDiary(FatsecretBase):
 
         return self.make_request(method='exercise_entries.get.v2', params=params)
 
+    def exercise_entries_get(self, date=None) -> dict:
+        """
+        Returns the daily exercise entries for the user on a nominated date.
+        The API will always return 24 hours worth of exercise entries for a given user on a given date. These entries will either be "template" entries (which a user may override for any given day of the week) or saved exercise entry values.
+        Once a user saves or updates the entries on any given day, all entries for that day are saved. All adjustments to the day involve reducing the time for an existing activity in order to either add or increase the time taken for another activity. The default entries presented for a user for a given day of the week can be overridden using exercise_entries.save_template.
+
+        Args:
+            date (Int, optional): Number of days since January 1, 1970 (default value is the current day)
+
+        Returns:
+            dict: See https://platform.fatsecret.com/docs/v1/exercise_entries.get
+        """
+        params = self.get_params(date=date)
+
+        return self.make_request(method='exercise_entries.get', params=params)
+
     def exercise_entries_get_month_v2(self, date=None) -> dict:
         """
         Returns the summary estimated daily calories expended for a user's exercise diary entries for the month specified. Use this call to display total energy expenditure information to users about their exercise and activities for a nominated month. Days with no saved exercise diary entries are not included.
@@ -77,6 +111,20 @@ class ProfileExerciseDiary(FatsecretBase):
         params = self.get_params(date=date)
 
         return self.make_request(method='exercise_entries.get_month.v2', params=params)
+
+    def exercise_entries_get_month(self, date=None) -> dict:
+        """
+        Returns the summary estimated daily calories expended for a user's exercise diary entries for the month specified. Use this call to display total energy expenditure information to users about their exercise and activities for a nominated month. Days with no saved exercise diary entries are not included.
+
+        Args:
+            date (Int, optional): Number of days since January 1, 1970 (default value is the current day)
+
+        Returns:
+            dict: See https://platform.fatsecret.com/docs/v1/exercise_entries.get_month
+        """
+        params = self.get_params(date=date)
+
+        return self.make_request(method='exercise_entries.get_month', params=params)
 
     def exercise_entries_save_template(self, days, date=None) -> dict:
         """
